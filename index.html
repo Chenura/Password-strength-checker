@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Cyber Password Strength Checker</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#050816;
+    font-family:'Poppins',sans-serif;
+    color:white;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    position:relative;
+}
+
+/* Animated background */
+
+body::before{
+    content:"";
+    position:absolute;
+    width:600px;
+    height:600px;
+    background:radial-gradient(circle,#00ffcc33,transparent 70%);
+    top:-200px;
+    left:-200px;
+    animation:moveGlow 8s infinite alternate;
+}
+
+body::after{
+    content:"";
+    position:absolute;
+    width:500px;
+    height:500px;
+    background:radial-gradient(circle,#0066ff22,transparent 70%);
+    bottom:-200px;
+    right:-150px;
+    animation:moveGlow2 10s infinite alternate;
+}
+
+@keyframes moveGlow{
+    from{
+        transform:translate(0,0);
+    }
+    to{
+        transform:translate(100px,80px);
+    }
+}
+
+@keyframes moveGlow2{
+    from{
+        transform:translate(0,0);
+    }
+    to{
+        transform:translate(-80px,-100px);
+    }
+}
+
+/* Card */
+
+.container{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:480px;
+    background:rgba(15,23,42,0.75);
+    backdrop-filter:blur(15px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:25px;
+    padding:35px;
+    box-shadow:
+        0 0 25px rgba(0,255,200,0.15),
+        0 0 60px rgba(0,100,255,0.08);
+}
+
+/* Title */
+
+.title{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.title h1{
+    font-family:'Orbitron',sans-serif;
+    font-size:32px;
+    color:#00ffcc;
+    letter-spacing:2px;
+}
+
+.title p{
+    margin-top:8px;
+    color:#9aa4b2;
+    font-size:14px;
+}
+
+/* Input */
+
+.input-box{
+    position:relative;
+}
+
+.input-box input{
+    width:100%;
+    padding:16px 50px 16px 18px;
+    background:#0b1220;
+    border:1px solid #1f2937;
+    border-radius:14px;
+    outline:none;
+    color:white;
+    font-size:16px;
+    transition:0.3s;
+}
+
+.input-box input:focus{
+    border-color:#00ffcc;
+    box-shadow:0 0 15px rgba(0,255,200,0.25);
+}
+
+.toggle-btn{
+    position:absolute;
+    right:15px;
+    top:50%;
+    transform:translateY(-50%);
+    cursor:pointer;
+    font-size:18px;
+    color:#9aa4b2;
+}
+
+/* Strength */
+
+.strength-container{
+    margin-top:25px;
+}
+
+.strength-bar{
+    width:100%;
+    height:14px;
+    background:#111827;
+    border-radius:50px;
+    overflow:hidden;
+}
+
+.strength-fill{
+    height:100%;
+    width:0%;
+    border-radius:50px;
+    transition:0.4s ease;
+}
+
+.strength-text{
+    margin-top:14px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+#strengthLabel{
+    font-weight:600;
+    font-size:15px;
+}
+
+#strengthPercent{
+    color:#9aa4b2;
+    font-size:14px;
+}
+
+/* Checklist */
+
+.checklist{
+    margin-top:30px;
+    display:grid;
+    gap:12px;
+}
+
+.check-item{
+    background:#0b1220;
+    padding:12px 15px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border:1px solid #182133;
+    transition:0.3s;
+}
+
+.check-item.valid{
+    border-color:#00ffcc55;
+    background:#00ffcc10;
+}
+
+.icon{
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    background:#1f2937;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+}
+
+.valid .icon{
+    background:#00ffcc;
+    color:black;
+    font-weight:bold;
+}
+
+/* Footer */
+
+.footer{
+    margin-top:28px;
+    text-align:center;
+    color:#6b7280;
+    font-size:13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="title">
+        <h1>CYBER PASS</h1>
+        <p>Advanced Password Strength Analyzer</p>
+    </div>
+
+    <div class="input-box">
+        <input type="password" id="password" placeholder="Enter your password">
+        <span class="toggle-btn" id="toggleBtn">👁️</span>
+    </div>
+
+    <div class="strength-container">
+
+        <div class="strength-bar">
+            <div class="strength-fill" id="strengthFill"></div>
+        </div>
+
+        <div class="strength-text">
+            <span id="strengthLabel">Waiting for input...</span>
+            <span id="strengthPercent">0%</span>
+        </div>
+
+    </div>
+
+    <div class="checklist">
+
+        <div class="check-item" id="lengthCheck">
+            <div class="icon">✓</div>
+            <span>Minimum 8 characters</span>
+        </div>
+
+        <div class="check-item" id="upperCheck">
+            <div class="icon">✓</div>
+            <span>Uppercase letter</span>
+        </div>
+
+        <div class="check-item" id="lowerCheck">
+            <div class="icon">✓</div>
+            <span>Lowercase letter</span>
+        </div>
+
+        <div class="check-item" id="numberCheck">
+            <div class="icon">✓</div>
+            <span>Number included</span>
+        </div>
+
+        <div class="check-item" id="specialCheck">
+            <div class="icon">✓</div>
+            <span>Special character</span>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        🔐 Cybersecurity Password Checker • GitHub Pages Ready
+    </div>
+
+</div>
+
+<script>
+
+const passwordInput = document.getElementById("password");
+const strengthFill = document.getElementById("strengthFill");
+const strengthLabel = document.getElementById("strengthLabel");
+const strengthPercent = document.getElementById("strengthPercent");
+const toggleBtn = document.getElementById("toggleBtn");
+
+toggleBtn.addEventListener("click", () => {
+
+    if(passwordInput.type === "password"){
+        passwordInput.type = "text";
+        toggleBtn.textContent = "🙈";
+    }else{
+        passwordInput.type = "password";
+        toggleBtn.textContent = "👁️";
+    }
+
+});
+
+passwordInput.addEventListener("input", () => {
+
+    const value = passwordInput.value;
+
+    let strength = 0;
+
+    const checks = {
+        length: value.length >= 8,
+        upper: /[A-Z]/.test(value),
+        lower: /[a-z]/.test(value),
+        number: /[0-9]/.test(value),
+        special: /[^A-Za-z0-9]/.test(value)
+    };
+
+    updateCheck("lengthCheck", checks.length);
+    updateCheck("upperCheck", checks.upper);
+    updateCheck("lowerCheck", checks.lower);
+    updateCheck("numberCheck", checks.number);
+    updateCheck("specialCheck", checks.special);
+
+    for(let key in checks){
+        if(checks[key]) strength++;
+    }
+
+    const percent = strength * 20;
+
+    strengthFill.style.width = percent + "%";
+    strengthPercent.textContent = percent + "%";
+
+    if(strength === 0){
+        strengthFill.style.background = "#111827";
+        strengthLabel.textContent = "Waiting for input...";
+    }
+    else if(strength <= 2){
+        strengthFill.style.background = "#ff3b30";
+        strengthLabel.textContent = "Weak Password";
+    }
+    else if(strength === 3){
+        strengthFill.style.background = "#ff9500";
+        strengthLabel.textContent = "Medium Password";
+    }
+    else if(strength === 4){
+        strengthFill.style.background = "#00bfff";
+        strengthLabel.textContent = "Strong Password";
+    }
+    else{
+        strengthFill.style.background = "#00ffcc";
+        strengthLabel.textContent = "Very Strong Password";
+    }
+
+});
+
+function updateCheck(id, valid){
+
+    const element = document.getElementById(id);
+
+    if(valid){
+        element.classList.add("valid");
+    }else{
+        element.classList.remove("valid");
+    }
+
+}
+
+</script>
+
+</body>
+</html>

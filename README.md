@@ -1,5 +1,7 @@
 # 🔐 Cyber Password Strength Checker
 
+URL https://chenura.github.io/Password-strength-checker/
+
 A modern cybersecurity-themed password strength checker built using HTML, CSS, and JavaScript.
 
 This project analyzes password strength in real time and provides visual feedback with an advanced cyber-style UI.
